@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State var username: String = ""
-    @State var password: String = ""
+    @StateObject private var viewModel = LoginViewModel()
     
     var body: some View {
         VStack (spacing: 20){
@@ -20,20 +19,37 @@ struct LoginView: View {
                 
                 Image("Logo")
                     .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 50, height: 50)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 50, height: 50)
             }
-                        AuthCard(username: $username, password: $password)
+            
+            AuthCard(
+                email: $viewModel.email,
+                password: $viewModel.password,
+                isLoading: $viewModel.isLoading,
+                login: {
+                    Task {
+                        await viewModel.login()
+                    }
+                }
+            )
+            
+            Button(action: {
+                print("")
+            }) {
+                Text("Sign Up")
+                    .foregroundStyle(Color.black)
+            }
         }
         .padding(20)
     }
 }
 
 struct AuthCard: View {
-    @Binding var username: String
+    @Binding var email: String
     @Binding var password: String
-    
-    @State var isLoading: Bool = true
+    @Binding var isLoading: Bool
+    var login: () -> Void
     
     var body: some View {
         VStack(spacing: 20) {
@@ -44,7 +60,7 @@ struct AuthCard: View {
             VStack (alignment: HorizontalAlignment.leading) {
                 Text("Email:")
                 
-                TextField("Username", text: $username)
+                TextField("Username", text: $email)
                     .textInputAutocapitalization(.never)
                     .padding(5)
                     .background(Color.gray.opacity(0.1))
@@ -60,10 +76,12 @@ struct AuthCard: View {
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(5)
             }
-            Button(action: { isLoading = !isLoading }) {
-                
+            
+            Button(action: {
+                login()
+            }) {
                 if isLoading {
-                    HStack (){
+                    HStack {
                         ProgressView()
                             .tint(Color.white)
                         
@@ -71,19 +89,14 @@ struct AuthCard: View {
                             .foregroundColor(.white)
                     }
                     .padding(10)
-                    
-                    
                 } else {
                     Text("Sign In")
                         .padding(10)
                         .foregroundColor(.white)
                 }
-
             }
             .background(Color.black)
             .cornerRadius(5)
-            
-                        
         }
         .padding(10)
         .background(Color.white)
