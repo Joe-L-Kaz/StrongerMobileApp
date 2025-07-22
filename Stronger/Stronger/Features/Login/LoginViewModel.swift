@@ -12,17 +12,18 @@ final class LoginViewModel: ObservableObject {
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     
-    private let _authService: AuthService
+    private let authService: AuthService
     
     init(authService: AuthService = AuthServiceImpl()) {
-        self._authService = authService
+        self.authService = authService
     }
     
-    func login() async -> String? {
+    func login(completeion: @escaping (Bool) -> Void) async -> String? {
         isLoading = true
         do {
-            let result = try await _authService.login(email: email, password: password)
+            let result = try await authService.login(email: email, password: password)
             isLoading = false
+            completeion(true)
             return result
         } catch {
             isLoading = false

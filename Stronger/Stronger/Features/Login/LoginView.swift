@@ -9,6 +9,7 @@ import SwiftUI
 
 struct LoginView: View {
     @StateObject private var viewModel = LoginViewModel()
+    @EnvironmentObject var authState : AuthenticationState
     
     var body: some View {
         VStack (spacing: 20){
@@ -29,7 +30,9 @@ struct LoginView: View {
                 isLoading: $viewModel.isLoading,
                 login: {
                     Task {
-                        await viewModel.login()
+                        await viewModel.login() { success in
+                            authState.isAuthenticated = success
+                        }
                     }
                 }
             )

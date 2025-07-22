@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct StrongerApp: App {
+    @StateObject var authenticationState = AuthenticationState()
     var body: some Scene {
         WindowGroup {
-            LoginView()
+            if authenticationState.isAuthenticated {
+                ContentView()
+                    .environmentObject(authenticationState)
+            } else {
+                LoginView()
+                    .environmentObject(authenticationState)
+            }
+            
         }
     }
 }
