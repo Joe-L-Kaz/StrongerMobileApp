@@ -10,6 +10,7 @@ import SwiftUI
 @main
 struct StrongerApp: App {
     @StateObject var authenticationState = AuthenticationState()
+
     var body: some Scene {
         WindowGroup {
             if authenticationState.isAuthenticated {

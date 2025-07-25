@@ -7,7 +7,7 @@
 import Foundation
 
 struct AuthServiceImpl: AuthService {
-    func login(email: String, password: String) async throws -> String {
+    func login(email: String, password: String) async throws -> Void {
         guard let url = URL(string: "http://localhost:5020/api/User/Authenticate") else {
             throw URLError(.badURL)
         }
@@ -33,7 +33,7 @@ struct AuthServiceImpl: AuthService {
         }
         
         let decoded = try JSONDecoder().decode(LoginResponse.self, from: data)
-        print(decoded.accessToken);
-        return decoded.accessToken
+        KeychainWrapper.set(decoded.accessToken, forKey: "accessToken")
+        return
     }
 }

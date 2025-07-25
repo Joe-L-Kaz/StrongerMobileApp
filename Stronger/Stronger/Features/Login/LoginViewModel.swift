@@ -18,17 +18,16 @@ final class LoginViewModel: ObservableObject {
         self.authService = authService
     }
     
-    func login(completeion: @escaping (Bool) -> Void) async -> String? {
+    func login(completeion: @escaping (Bool) -> Void) async -> Void {
         isLoading = true
         do {
-            let result = try await authService.login(email: email, password: password)
+            try await authService.login(email: email, password: password)
             isLoading = false
             completeion(true)
-            return result
         } catch {
             isLoading = false
             print(error)
-            return nil
+            return
         }
     }
 }
