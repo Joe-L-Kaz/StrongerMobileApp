@@ -37,12 +37,18 @@ struct LoginView: View {
                 }
             )
             
-            Button(action: {
-                print("")
-            }) {
-                Text("Sign Up")
-                    .foregroundStyle(Color.black)
+            HStack (spacing: 10){
+                Text("Don't have an account?")
+                NavigationLink(destination: RegisterView()) {
+                    Text("Sign Up")
+                        .underline(true)
+                }
+                .underline(true)
             }
+            .foregroundStyle(.black)
+            
+            
+            
         }
         .padding(20)
     }
