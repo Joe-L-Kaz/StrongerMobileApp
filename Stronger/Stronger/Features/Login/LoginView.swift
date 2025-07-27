@@ -24,18 +24,48 @@ struct LoginView: View {
                     .frame(width: 50, height: 50)
             }
             
-            AuthCard1(
-                email: $viewModel.email,
-                password: $viewModel.password,
+            AuthCard(
                 isLoading: $viewModel.isLoading,
-                login: {
-                    Task {
-                        await viewModel.login() { success in
-                            authState.isAuthenticated = success
+                actionButtonLabel: "Sign In"
+            ){
+                    VStack(alignment: .leading, spacing: 20) {
+                        
+                        VStack (alignment: HorizontalAlignment.leading) {
+                            Text("Email:")
+                            
+                            TextField("Username", text: $viewModel.email)
+                                .textInputAutocapitalization(.never)
+                                .padding(5)
+                                .background(Color.gray.opacity(0.1))
+                            
+                                .cornerRadius(5)
+                            
                         }
+
+                        VStack(alignment: HorizontalAlignment.leading) {
+                            Text("Password:")
+                            SecureField("Password", text: $viewModel.password)
+                                .textInputAutocapitalization(.never)
+                                .padding(5)
+                                .background(Color.gray.opacity(0.1))
+                                .cornerRadius(5)
+                        }
+                        
+                        VStack (alignment: HorizontalAlignment.center) {
+                            LoadingButton(isLoading: $viewModel.isLoading, onSubmit: {
+                                Task {
+                                    await viewModel.login() { success in
+                                        authState.isAuthenticated = success
+                                    }
+                                }
+                            }){
+                                Text("Sign In")
+                            }
+                        }
+                        .frame(maxWidth: .infinity)
                     }
                 }
-            )
+            
             
             HStack (spacing: 10){
                 Text("Don't have an account?")
@@ -52,67 +82,6 @@ struct LoginView: View {
         }
         .padding(20)
     }
-}
-
-struct AuthCard1: View {
-    @Binding var email: String
-    @Binding var password: String
-    @Binding var isLoading: Bool
-    var login: () -> Void
-    
-    var body: some View {
-        VStack(spacing: 20) {
-            Text("Lets sign you in:")
-                .bold(true)
-                .font(.headline)
-            
-            VStack (alignment: HorizontalAlignment.leading) {
-                Text("Email:")
-                
-                TextField("Username", text: $email)
-                    .textInputAutocapitalization(.never)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-                
-            }
-            
-            VStack(alignment: HorizontalAlignment.leading) {
-                Text("Password:")
-                SecureField("Password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-            }
-            
-            Button(action: {
-                login()
-            }) {
-                if isLoading {
-                    HStack {
-                        ProgressView()
-                            .tint(Color.white)
-                        
-                        Text("Sign In")
-                            .foregroundColor(.white)
-                    }
-                    .padding(10)
-                } else {
-                    Text("Sign In")
-                        .padding(10)
-                        .foregroundColor(.white)
-                }
-            }
-            .background(Color.black)
-            .cornerRadius(5)
-        }
-        .padding(10)
-        .background(Color.white)
-        .cornerRadius(8)
-        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.15), radius: 5, x: 0, y: -1)
-    }
-    
 }
 
 #Preview {

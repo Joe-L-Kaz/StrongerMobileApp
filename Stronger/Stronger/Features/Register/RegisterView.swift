@@ -8,10 +8,25 @@
 import SwiftUI
 
 struct RegisterView: View {
-    @StateObject private var viewModel = LoginViewModel()
+    @StateObject private var viewModel = RegisterViewModel()
     @EnvironmentObject var authState : AuthenticationState
     
     var body: some View {
+        let onNextPressed: () -> Void = {
+            viewModel.advanceStep()
+        }
+        let onSignInPressed: () -> Void = {
+            Task {
+                await viewModel.register(
+                    forename: viewModel.forename,
+                    surname: viewModel.surname,
+                    dob: viewModel.dob,
+                    email: viewModel.email,
+                    password: viewModel.password,
+                    confirmPassword: viewModel.confirmPassword
+                )
+            }
+        }
         VStack (spacing: 20){
             HStack (spacing: 20) {
                 Text("Stronger")
@@ -24,18 +39,29 @@ struct RegisterView: View {
                     .frame(width: 50, height: 50)
             }
             
-            RegCard(
-                email: $viewModel.email,
-                password: $viewModel.password,
+            AuthCard(
                 isLoading: $viewModel.isLoading,
-                login: {
-                    Task {
-                        await viewModel.login() { success in
-                            authState.isAuthenticated = success
+                actionButtonLabel: "Sign Up",
+            ){
+                    Group {
+                        if viewModel.step == 1 {
+                            EnterDetails(
+                                forename: $viewModel.forename,
+                                surname: $viewModel.surname,
+                                email: $viewModel.email,
+                                dob: $viewModel.dob,
+                                isLoading: $viewModel.isLoading,
+                                onNextPressed: onNextPressed
+                            )
+                        } else {
+                            SetPassword(password: $viewModel.password, confirmPassword: $viewModel.confirmPassword, isLoading: $viewModel.isLoading, onSignInPressed: {
+                                onSignInPressed()
+                            })
                         }
                     }
+                    
+                    
                 }
-            )
             
             HStack (spacing: 10){
                 Text("Already have an account?")
@@ -50,28 +76,75 @@ struct RegisterView: View {
     }
 }
 
-struct RegCard: View {
+fileprivate struct EnterDetails: View {
+    @Binding var forename: String
+    @Binding var surname: String
     @Binding var email: String
-    @Binding var password: String
+    @Binding var dob: Date
     @Binding var isLoading: Bool
-    var login: () -> Void
+    var onNextPressed: () -> Void
     
     var body: some View {
-        VStack(spacing: 20) {
-            Text("Lets sign you in:")
-                .bold(true)
-                .font(.headline)
+        VStack(alignment: .leading, spacing: 20) {
+            
+            VStack(alignment: HorizontalAlignment.leading) {
+                Text("Name:")
+                TextField("John", text: $forename)
+                    .padding(5)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(5)
+            }
+            
+            VStack(alignment: HorizontalAlignment.leading) {
+                Text("Surname:")
+                TextField("Doe", text: $surname)
+                    .padding(5)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(5)
+            }
+            
             
             VStack (alignment: HorizontalAlignment.leading) {
                 Text("Email:")
-                
-                TextField("Username", text: $email)
+                TextField("email", text: $email)
                     .textInputAutocapitalization(.never)
                     .padding(5)
                     .background(Color.gray.opacity(0.1))
                     .cornerRadius(5)
-                
+
             }
+            
+            VStack(alignment: HorizontalAlignment.leading) {
+                Text("Date of Birth:")
+                DatePicker("Birthdate", selection: $dob, displayedComponents: .date)
+                    .padding(5)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(5)
+            }
+            
+            VStack (alignment: HorizontalAlignment.center) {
+                StaticButton(onSubmit:{
+                    onNextPressed()
+                }){
+                    Text("Next")
+                }
+            }
+            .frame(maxWidth: .infinity)
+            
+            
+        }
+    }
+    
+}
+
+fileprivate struct SetPassword: View {
+    @Binding var password: String
+    @Binding var confirmPassword: String
+    @Binding var isLoading: Bool
+    var onSignInPressed: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading, spacing: 20) {
             
             VStack(alignment: HorizontalAlignment.leading) {
                 Text("Password:")
@@ -82,33 +155,22 @@ struct RegCard: View {
                     .cornerRadius(5)
             }
             
-            Button(action: {
-                login()
-            }) {
-                if isLoading {
-                    HStack {
-                        ProgressView()
-                            .tint(Color.white)
-                        
-                        Text("Sign In")
-                            .foregroundColor(.white)
-                    }
-                    .padding(10)
-                } else {
+            VStack(alignment: HorizontalAlignment.leading) {
+                Text("Confirm Password:")
+                SecureField("Password", text: $confirmPassword)
+                    .textInputAutocapitalization(.never)
+                    .padding(5)
+                    .background(Color.gray.opacity(0.1))
+                    .cornerRadius(5)
+            }
+            VStack (alignment: HorizontalAlignment.center) {
+                LoadingButton(isLoading: $isLoading, onSubmit: onSignInPressed) {
                     Text("Sign In")
-                        .padding(10)
-                        .foregroundColor(.white)
                 }
             }
-            .background(Color.black)
-            .cornerRadius(5)
+            .frame(maxWidth: .infinity)
         }
-        .padding(10)
-        .background(Color.white)
-        .cornerRadius(8)
-        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.15), radius: 5, x: 0, y: -1)
     }
-    
 }
 
 #Preview {

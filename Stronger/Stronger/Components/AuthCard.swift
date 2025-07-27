@@ -9,7 +9,6 @@ import SwiftUI
 struct AuthCard<Content: View>: View {
     @Binding var isLoading: Bool
     var actionButtonLabel: String
-    var onSubmit : () -> Void
     var content: () -> Content
     
     var body: some View {
@@ -19,27 +18,6 @@ struct AuthCard<Content: View>: View {
                 .font(.headline)
             
             content()
-            
-            Button(action: {
-                onSubmit()
-            }) {
-                if isLoading {
-                    HStack {
-                        ProgressView()
-                            .tint(Color.white)
-                        
-                        Text(actionButtonLabel)
-                            .foregroundColor(.white)
-                    }
-                    .padding(10)
-                } else {
-                    Text("actionButtonLabel")
-                        .padding(10)
-                        .foregroundColor(.white)
-                }
-            }
-            .background(Color.black)
-            .cornerRadius(5)
         }
         .padding(10)
         .background(Color.white)
