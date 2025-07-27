@@ -24,7 +24,7 @@ struct LoginView: View {
                     .frame(width: 50, height: 50)
             }
             
-            AuthCard(
+            AuthCard1(
                 email: $viewModel.email,
                 password: $viewModel.password,
                 isLoading: $viewModel.isLoading,
@@ -54,7 +54,7 @@ struct LoginView: View {
     }
 }
 
-struct AuthCard: View {
+struct AuthCard1: View {
     @Binding var email: String
     @Binding var password: String
     @Binding var isLoading: Bool
