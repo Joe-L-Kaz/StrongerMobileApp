@@ -17,8 +17,10 @@ struct StrongerApp: App {
                 ContentView()
                     .environmentObject(authenticationState)
             } else {
-                LoginView()
-                    .environmentObject(authenticationState)
+                NavigationStack {
+                    LoginView()
+                        .environmentObject(authenticationState)
+                }
             }
             
         }

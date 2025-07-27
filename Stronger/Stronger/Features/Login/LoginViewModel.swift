@@ -22,12 +22,12 @@ final class LoginViewModel: ObservableObject {
         isLoading = true
         do {
             try await authService.login(email: email, password: password)
-            isLoading = false
-            completeion(true)
         } catch {
             isLoading = false
             print(error)
             return
         }
+        isLoading = false
+        completeion(true)
     }
 }
