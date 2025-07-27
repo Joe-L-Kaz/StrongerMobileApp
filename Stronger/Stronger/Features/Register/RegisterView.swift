@@ -10,6 +10,8 @@ import SwiftUI
 struct RegisterView: View {
     @StateObject private var viewModel = RegisterViewModel()
     @EnvironmentObject var authState : AuthenticationState
+    @Environment(\.dismiss) var dismiss
+    @State private var showSuccessAlert: Bool = false
     
     var body: some View {
         let onNextPressed: () -> Void = {
@@ -23,7 +25,10 @@ struct RegisterView: View {
                     dob: viewModel.dob,
                     email: viewModel.email,
                     password: viewModel.password,
-                    confirmPassword: viewModel.confirmPassword
+                    confirmPassword: viewModel.confirmPassword,
+                    onSuccess: {
+                        showSuccessAlert = true
+                    }
                 )
             }
         }
@@ -73,6 +78,15 @@ struct RegisterView: View {
             .foregroundStyle(.black)
         }
         .padding(20)
+        .alert(isPresented: $showSuccessAlert) {
+            Alert(
+                title: Text("Account created"),
+                message: Text("Your account has been created successfully."),
+                dismissButton: .default(Text("OK"), action: {
+                    dismiss()
+                })
+            )
+        }
     }
 }
 

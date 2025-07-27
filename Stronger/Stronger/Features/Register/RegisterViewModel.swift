@@ -24,7 +24,15 @@ final class RegisterViewModel: ObservableObject{
     }
     
     
-    public func register(forename: String, surname: String, dob: Date, email: String, password: String, confirmPassword: String) async -> Void {
+    public func register(
+        forename: String,
+        surname: String,
+        dob: Date,
+        email: String,
+        password: String,
+        confirmPassword: String,
+        onSuccess: @escaping () -> Void
+    ) async -> Void {
         if password != confirmPassword {
             return
         }
@@ -38,6 +46,7 @@ final class RegisterViewModel: ObservableObject{
             return
         }
         isLoading = false
+        onSuccess()
     }
     
     public func advanceStep() -> Void {
