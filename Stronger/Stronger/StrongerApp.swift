@@ -14,7 +14,7 @@ struct StrongerApp: App {
     var body: some Scene {
         WindowGroup {
             if authenticationState.isAuthenticated {
-                ContentView()
+                DashboardView()
                     .environmentObject(authenticationState)
             } else {
                 NavigationStack {
