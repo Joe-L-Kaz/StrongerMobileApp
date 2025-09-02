@@ -103,29 +103,18 @@ fileprivate struct EnterDetails: View {
             
             VStack(alignment: HorizontalAlignment.leading) {
                 Text("Name:")
-                TextField("John", text: $forename)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
+                InputField(value: $forename, placeholder: "John")
             }
             
             VStack(alignment: HorizontalAlignment.leading) {
                 Text("Surname:")
-                TextField("Doe", text: $surname)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
+                InputField(value: $surname, placeholder: "Doe")
             }
             
             
             VStack (alignment: HorizontalAlignment.leading) {
                 Text("Email:")
-                TextField("email", text: $email)
-                    .textInputAutocapitalization(.never)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
-
+                InputField(value: $email, placeholder: "Email")
             }
             
             VStack(alignment: HorizontalAlignment.leading) {
@@ -162,20 +151,20 @@ fileprivate struct SetPassword: View {
             
             VStack(alignment: HorizontalAlignment.leading) {
                 Text("Password:")
-                SecureField("Password", text: $password)
-                    .textInputAutocapitalization(.never)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
+                InputField(
+                    value: $password,
+                    placeholder: "Password",
+                    isSecureTextEntry: true
+                )
             }
             
             VStack(alignment: HorizontalAlignment.leading) {
                 Text("Confirm Password:")
-                SecureField("Password", text: $confirmPassword)
-                    .textInputAutocapitalization(.never)
-                    .padding(5)
-                    .background(Color.gray.opacity(0.1))
-                    .cornerRadius(5)
+                InputField(
+                    value: $confirmPassword,
+                    placeholder: "Confirm Password",
+                    isSecureTextEntry: true
+                )
             }
             VStack (alignment: HorizontalAlignment.center) {
                 LoadingButton(isLoading: $isLoading, onSubmit: onSignInPressed) {

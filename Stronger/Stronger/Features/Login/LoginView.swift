@@ -32,23 +32,18 @@ struct LoginView: View {
                         
                         VStack (alignment: HorizontalAlignment.leading) {
                             Text("Email:")
-                            
-                            TextField("Username", text: $viewModel.email)
-                                .textInputAutocapitalization(.never)
-                                .padding(5)
-                                .background(Color.gray.opacity(0.1))
-                            
-                                .cornerRadius(5)
+                            InputField(value: $viewModel.email, placeholder: "Email")
                             
                         }
 
                         VStack(alignment: HorizontalAlignment.leading) {
                             Text("Password:")
-                            SecureField("Password", text: $viewModel.password)
-                                .textInputAutocapitalization(.never)
-                                .padding(5)
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(5)
+                            InputField(
+                                value: $viewModel.password,
+                                placeholder: "Password",
+                                isSecureTextEntry: true
+                            )
+                            
                         }
                         
                         VStack (alignment: HorizontalAlignment.center) {

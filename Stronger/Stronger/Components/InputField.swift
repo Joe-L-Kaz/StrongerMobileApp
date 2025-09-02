@@ -10,7 +10,7 @@ import SwiftUI
 struct InputField: View {
     @Binding public var value: String
     public let placeholder: String
-    public let isSecureTextEntry: Bool = false
+    public var isSecureTextEntry: Bool = false
     
     var body: some View {
         if isSecureTextEntry {
