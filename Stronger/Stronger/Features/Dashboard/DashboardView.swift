@@ -7,24 +7,15 @@
 import SwiftUI
 
 struct DashboardView : View {
-    
     var body: some View {
         TabView {
-            Text("Hello")
-                .tabItem {
-                    Image(systemName: "house")
-                    Text("Home")
-                    
-                }
-            
-            Text("There")
+            ExercisesView()
                 .tabItem {
                     Image(systemName: "dumbbell.fill")
                     Text("Exercises")
-                    
                 }
         }
-        
+        .background(Color.gray)
     }
 }
 
