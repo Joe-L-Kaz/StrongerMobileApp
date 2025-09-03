@@ -8,14 +8,35 @@
 import SwiftUI
 
 struct ExercisesView: View {
-    @State private var searchText: String = ""
+    @StateObject private var viewModel = ExercisesViewModel()
     
     var body: some View {
         TabPage(title: "Exercises") {
-            SearchInputField(value: $searchText, placeholder: "Search")
+            SearchInputField(value: $viewModel.searchText, placeholder: "Search")
             
-            ScrollView {
-                
+            ScrollView(){
+                VStack{
+                    ExerciseCard(
+                        title: "Bench Press",
+                        imageUri: "/Users/joseph/Pictures/Placeholder.jpeg"
+                    )
+                    
+                    ExerciseCard(
+                        title: "Bench Press",
+                        imageUri: "/Users/joseph/Pictures/Placeholder.jpeg"
+                    )
+                    
+                    ExerciseCard(
+                        title: "Bench Press",
+                        imageUri: "/Users/joseph/Pictures/Placeholder.jpeg"
+                    )
+                    
+                    ExerciseCard(
+                        title: "Bench Press",
+                        imageUri: "/Users/joseph/Pictures/Placeholder.jpeg"
+                    )
+                }
+                .frame(maxWidth: .infinity)
             }
         }
     }

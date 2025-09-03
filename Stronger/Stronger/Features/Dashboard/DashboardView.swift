@@ -15,7 +15,6 @@ struct DashboardView : View {
                     Text("Exercises")
                 }
         }
-        .background(Color.gray)
     }
 }
 
