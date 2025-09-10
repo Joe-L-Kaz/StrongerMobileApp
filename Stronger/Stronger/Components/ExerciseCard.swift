@@ -18,15 +18,17 @@ struct ExerciseCard: View {
             
             Image("Placeholder")
                 .resizable()
-                .frame(width: 150, height: 100)
+                .frame(width: 125, height: 100)
+                .cornerRadius(5)
             
             StaticButton(onSubmit: { }) {
                 Text("View")
             }
         }
+        .frame(maxWidth: .infinity)
         .padding(10)
         .background(Color.white)
         .cornerRadius(8)
-        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.15), radius: 5, x: 0, y: -1) 
+        .shadow(color: Color(.sRGBLinear, white: 0, opacity: 0.15), radius: 2, x: 0, y: -1)
     }
 }

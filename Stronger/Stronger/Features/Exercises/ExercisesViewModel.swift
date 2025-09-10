@@ -8,7 +8,28 @@
 import Foundation
 
 @MainActor
-public final class ExercisesViewModel: ObservableObject {
-    @Published public var searchText: String = ""
+final class ExercisesViewModel: ObservableObject {
+    @Published var searchText: String = ""
+    @Published var exercises: [ExerciseResponse] = []
+    
+    private let exerciseService: ExerciseService
+    
+    init(exerciseService: ExerciseService = ExerciseServiceImpl()){
+        self.exerciseService = exerciseService
+    }
+    
+    
+    
+    func getExercises() async throws -> [ExerciseResponse]  {
+        do{
+            let exercises = try await exerciseService.List(name: nil, primaryMuscleGroup: nil, secondaryMuscleGroups: nil, exerciseType: nil, forceType: nil)
+            
+        } catch {
+            throw error
+        }
+        
+        print(exercises)
+        return []
+    }
     
 }
