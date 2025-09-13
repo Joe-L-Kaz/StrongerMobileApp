@@ -6,27 +6,12 @@
 //
 
 struct ExerciseServiceImpl: ExerciseService {
-    func List(
-        name: String? = nil,
-        primaryMuscleGroup: MuscleGroup? = nil,
-        secondaryMuscleGroups: MuscleGroup? = nil,
-        exerciseType: ExerciseType? = nil,
-        forceType: ForceType? = nil
-    ) async throws -> [ExerciseResponse] {
-        let requestBody = ListExercisesRequest(
-            name: name,
-            primaryMuscleGroup: primaryMuscleGroup,
-            secondaryMuscleGroups: secondaryMuscleGroups,
-            exerciseType: exerciseType,
-            forceType: forceType
-        )
-        
+    func List() async throws -> [ExerciseResponse] {
         var response : [ExerciseResponse] = []
         
         do{
-            response = try await ApiClient.send(endpoint: "Exercise/List?Name&PrimaryMuscleGroup=Back&SecondaryMuscleGroup=Bicep&ExerciseType&ForceType", method: "GET")
+            response = try await ApiClient.send(endpoint: "Exercise/List")
         } catch {
-            print(error)
             throw error
         }
         

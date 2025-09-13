@@ -6,6 +6,7 @@
 //
 
 struct ExerciseResponse : Decodable{
+    public let id: Int64
     public let name: String
     public let description: String
     public let imagePath: String?

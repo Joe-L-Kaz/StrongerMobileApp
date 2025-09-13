@@ -20,15 +20,12 @@ final class ExercisesViewModel: ObservableObject {
     
     
     
-    func getExercises() async throws -> [ExerciseResponse]  {
+    func getExercises() async throws -> Void  {
         do{
             exercises = try await exerciseService.List()
         } catch {
             throw error
         }
-        
-        print(exercises)
-        return []
     }
     
 }
