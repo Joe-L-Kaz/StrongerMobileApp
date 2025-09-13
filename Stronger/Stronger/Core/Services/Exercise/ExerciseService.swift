@@ -6,11 +6,5 @@
 //
 
 protocol ExerciseService {
-    func List(
-        name: String?,
-        primaryMuscleGroup: MuscleGroup?,
-        secondaryMuscleGroups: MuscleGroup?,
-        exerciseType: ExerciseType?,
-        forceType: ForceType?
-    ) async throws -> [ExerciseResponse]
+    func List() async throws -> [ExerciseResponse]
 }
