@@ -14,7 +14,9 @@ struct ExerciseCard: View {
     var body: some View {
         VStack (spacing: 10) {
             Text(title)
-                .font(.headline)
+                .font(.caption)
+                .lineLimit(1)
+                .truncationMode(.tail)
             
             Image("Placeholder")
                 .resizable()
