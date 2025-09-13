@@ -21,6 +21,6 @@ struct AuthServiceImpl: AuthService {
         } catch {
             throw error
         }
-        KeychainWrapper.set(token, forKey: "token")
+        KeychainWrapper.set(token, forKey: "accessToken")
     }
 }

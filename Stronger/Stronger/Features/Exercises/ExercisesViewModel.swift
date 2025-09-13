@@ -22,8 +22,7 @@ final class ExercisesViewModel: ObservableObject {
     
     func getExercises() async throws -> [ExerciseResponse]  {
         do{
-            let exercises = try await exerciseService.List(name: nil, primaryMuscleGroup: nil, secondaryMuscleGroups: nil, exerciseType: nil, forceType: nil)
-            
+            exercises = try await exerciseService.List(name: nil, primaryMuscleGroup: nil, secondaryMuscleGroups: nil, exerciseType: nil, forceType: nil)
         } catch {
             throw error
         }

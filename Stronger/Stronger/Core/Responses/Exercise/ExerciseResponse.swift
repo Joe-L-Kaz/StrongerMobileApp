@@ -6,11 +6,11 @@
 //
 
 struct ExerciseResponse : Decodable{
-    public let Name: String
-    public let Description: String
-    public let ImagePath: String?
-    public let PrimaryMuscleGroup: MuscleGroup
-    public let SecondaryMuscleGroup: MuscleGroup?
-    public let ExerciseType: ExerciseType
-    public let ForceType: ForceType
+    public let name: String
+    public let description: String
+    public let imagePath: String?
+    public let primaryMuscleGroup: MuscleGroup
+    public let secondaryMuscleGroup: MuscleGroup?
+    public let exerciseType: ExerciseType
+    public let forceType: ForceType
 }

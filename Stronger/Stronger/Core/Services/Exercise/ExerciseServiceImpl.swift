@@ -24,8 +24,9 @@ struct ExerciseServiceImpl: ExerciseService {
         var response : [ExerciseResponse] = []
         
         do{
-            response = try await ApiClient.send(endpoint: "Exercise/List", requestBody: requestBody)
+            response = try await ApiClient.send(endpoint: "Exercise/List?Name&PrimaryMuscleGroup=Back&SecondaryMuscleGroup=Bicep&ExerciseType&ForceType", method: "GET")
         } catch {
+            print(error)
             throw error
         }
         
