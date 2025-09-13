@@ -18,7 +18,7 @@ struct ExercisesView: View {
             
             ScrollView {
                 LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
-                    ForEach(viewModel.exercises, id: \.id) { exercise in
+                    ForEach(viewModel.exercises, id: \.id   ) { exercise in
                         ExerciseCard(title: exercise.name, imageUri: exercise.imagePath ?? "")
                     }
                 }
