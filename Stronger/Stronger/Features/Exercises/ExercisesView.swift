@@ -17,21 +17,35 @@ struct ExercisesView: View {
             SearchInputField(value: $viewModel.searchText, placeholder: "Search")
             
             ScrollView {
-                LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
-                    ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                        ExerciseCard(title: exercise.name, imageUri: exercise.imagePath ?? "")
+                if viewModel.failedToLoad {
+                    Text(viewModel.failureMessage)
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                } else {
+                    LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
+                        ForEach(viewModel.exercises, id: \.id   ) { exercise in
+                            ExerciseCard(title: exercise.name, imageUri: exercise.imagePath ?? "")
+                        }
                     }
+                    .padding(5)
                 }
-                .padding(5)
             }
             .scrollIndicators(.hidden)
-            
-            StaticButton(onSubmit: {
-                Task {
+            .refreshable {
+                do {
                     try await viewModel.getExercises()
+                } catch {
+                    
+                    // TODO: handle error (e.g., set an @Published error message)
+                    print("Refresh failed: \(error)")
                 }
-            }) {
-                Text("Fetch")
+            }
+            .task {
+                do {
+                    try await viewModel.getExercises()
+                } catch {
+                    print("Initial load failed: \(error)")
+                }
             }
         }
     }

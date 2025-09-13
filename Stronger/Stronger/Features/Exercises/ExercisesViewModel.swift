@@ -11,6 +11,8 @@ import Foundation
 final class ExercisesViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var exercises: [ExerciseResponse] = []
+    @Published var failedToLoad: Bool = true
+    @Published var failureMessage: String = "Failed to load exercise plans, swipe down to refresh"
     
     private let exerciseService: ExerciseService
     
@@ -24,8 +26,20 @@ final class ExercisesViewModel: ObservableObject {
         do{
             exercises = try await exerciseService.List()
         } catch {
-            throw error
+            switch error {
+            case ApiError.unauthorized:
+                throw error
+            
+            default:
+                self.failureMessage = "Could not load plans"
+                self.failedToLoad = true
+            }
         }
+        
+        if failedToLoad == true {
+            failedToLoad = false
+        }
+            
     }
     
 }
