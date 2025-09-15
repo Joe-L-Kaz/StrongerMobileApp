@@ -24,7 +24,7 @@ struct ExercisesView: View {
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
                         ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                            ExerciseCard(title: exercise.name, imageUri: exercise.imagePath ?? "")
+                            ExerciseCard(title: exercise.name, imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""))
                         }
                     }
                     .padding(5)

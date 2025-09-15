@@ -18,10 +18,16 @@ struct ExerciseCard: View {
                 .lineLimit(1)
                 .truncationMode(.tail)
             
-            Image("Placeholder")
-                .resizable()
-                .frame(width: 125, height: 100)
-                .cornerRadius(5)
+            AsyncImage(url: URL(string: imageUri)) { image in
+                image
+                    .resizable()
+                    .scaledToFill()
+            } placeholder: {
+                ProgressView()
+            }
+            .frame(width: 125, height: 100)
+            .clipped()
+            .cornerRadius(8)
             
             StaticButton(onSubmit: { }) {
                 Text("View")
