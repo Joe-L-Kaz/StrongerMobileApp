@@ -8,5 +8,5 @@
 import Foundation
 
 final class AuthenticationState : ObservableObject {
-    @Published var isAuthenticated: Bool = true
+    @Published var isAuthenticated: Bool = false
 }

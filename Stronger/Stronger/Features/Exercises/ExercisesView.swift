@@ -24,7 +24,7 @@ struct ExercisesView: View {
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
                         ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                            ExerciseCard(title: exercise.name, imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""))
+                            ExerciseCard(title: exercise.name, imageUri: "http://149.88.120.141/images/" + (exercise.imagePath ?? ""))
                         }
                     }
                     .padding(5)
@@ -34,9 +34,7 @@ struct ExercisesView: View {
             .refreshable {
                 do {
                     try await viewModel.getExercises()
-                } catch {
-                    
-                    // TODO: handle error (e.g., set an @Published error message)
+                } catch {                    
                     print("Refresh failed: \(error)")
                 }
             }
