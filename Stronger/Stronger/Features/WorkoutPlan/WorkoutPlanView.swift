@@ -1,20 +1,19 @@
 //
-//  ExercisesView.swift
+//  WorkoutPlanView.swift
 //  Stronger
 //
-//  Created by Joseph Lobo-Kazinczi on 02/09/2025.
+//  Created by Joseph Lobo-Kazinczi on 16/09/2025.
 //
 
 import SwiftUI
 
-struct ExercisesView: View {
-    @StateObject private var viewModel = ExercisesViewModel()
-    
+struct WorkoutPlanView: View {
+    @StateObject private var viewModel: WorkoutPlanViewModel = WorkoutPlanViewModel()
     let columns = Array(repeating: GridItem(), count: 2)
     
     var body: some View {
-        TabPage(title: "Exercises") {
-            SearchInputField(value: $viewModel.searchText, placeholder: "Search")
+        TabPage(title: "Workout Plans"){
+            SearchInputField(value: $viewModel.searchText, placeholder: "Search workout plans")
             
             ScrollView {
                 if viewModel.failedToLoad {
@@ -23,22 +22,23 @@ struct ExercisesView: View {
                         .foregroundColor(.gray)
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
-                        ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                            ExerciseCard(title: exercise.name, imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""))
+                        ForEach(viewModel.workoutPlans, id: \.id   ) { plan in
+                            WorkoutPlanCard(title: plan.name)
                         }
                     }
                     .padding(5)
                 }
+                
             }
             .scrollIndicators(.hidden)
             .refreshable {
                 do {
-                    try await viewModel.getExercises()
+                    try await viewModel.getWorkoutPlans()
                 } catch {}
             }
             .task {
                 do {
-                    try await viewModel.getExercises()
+                    try await viewModel.getWorkoutPlans()
                 } catch {}
             }
         }
@@ -46,5 +46,5 @@ struct ExercisesView: View {
 }
 
 #Preview {
-    ExercisesView()
+    WorkoutPlanView()
 }

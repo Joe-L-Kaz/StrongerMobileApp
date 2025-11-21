@@ -8,7 +8,7 @@ import Foundation
 
 struct ApiClient {
     private  static let baseUrl = "http://localhost:5020/api/"
-    
+
     public static func send<TRequest: Encodable, TResponse: Decodable>(
         endpoint: String,
         method: String = "POST",

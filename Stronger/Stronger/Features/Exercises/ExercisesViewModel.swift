@@ -29,7 +29,7 @@ final class ExercisesViewModel: ObservableObject {
                 throw error
             
             default:
-                self.failureMessage = "Could not load plans"
+                self.failureMessage = "Could not load exercises"
                 self.failedToLoad = true
             }
         }
