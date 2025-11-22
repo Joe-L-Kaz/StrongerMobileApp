@@ -10,7 +10,7 @@ import SwiftUI
 struct ExerciseDetailsView : View {
     let exercise: ExerciseResponse
     var body : some View {
-        VStack (spacing: 10) {
+        VStack ( alignment: .center, spacing: 10,) {
             Text(exercise.name)
                 .font(.title)
                 .fontWeight(.bold)
@@ -30,23 +30,49 @@ struct ExerciseDetailsView : View {
             
             Text(exercise.description)
             
-            VStack(spacing: 5) {
-                Text("Muscle Groups")
+            VStack(alignment: .leading, spacing: 5) {
+                Text("Muscle Group(s)")
                     .fontWeight(.bold)
                     .font(.system(size: 18))
                 
-                Text("back")
+                Text("- " + exercise.primaryMuscleGroup.rawValue)
+                    .font(.system(size: 18))
                 
                 if(exercise.secondaryMuscleGroup != nil){
-                    Text(exercise.secondaryMuscleGroup!.rawValue)
-                        .fontWeight(.bold)
+                    Text("- " + exercise.secondaryMuscleGroup!.rawValue)
                         .font(.system(size: 18))
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
+            
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text("Force Type:")
+                        .fontWeight(.bold)
+                        .font(.system(size: 18))
+                    
+                    Text(exercise.forceType.rawValue)
+                        .font(.system(size: 18))
+                }
+                
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text("Exercise Type:")
+                        .fontWeight(.bold)
+                        .font(.system(size: 18))
+                    
+                    Text(exercise.exerciseType.rawValue)
+                        .font(.system(size: 18))
+                }
+                
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .padding()
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 
@@ -54,7 +80,7 @@ struct ExerciseDetailsView : View {
     ExerciseDetailsView(exercise: ExerciseResponse(
         id: 1,
         name: "Some Plan",
-        description: "First do this, then do that, finally do that.",
+        description: "First do this, then do that, finally do that",
         imagePath: "SomePath",
         primaryMuscleGroup: MuscleGroup.back,
         secondaryMuscleGroup: MuscleGroup.bicep,
