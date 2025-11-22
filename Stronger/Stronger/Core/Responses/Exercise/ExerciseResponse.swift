@@ -5,7 +5,7 @@
 //  Created by Joseph Lobo-Kazinczi on 10/09/2025.
 //
 
-struct ExerciseResponse : Decodable{
+struct ExerciseResponse : Decodable, Identifiable{
     public let id: Int64
     public let name: String
     public let description: String

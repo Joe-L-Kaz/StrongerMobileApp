@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ExercisesView: View {
     @StateObject private var viewModel = ExercisesViewModel()
+    @State private var selectedExercise: ExerciseResponse? = nil
     
     let columns = Array(repeating: GridItem(), count: 2)
     
@@ -24,7 +25,15 @@ struct ExercisesView: View {
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
                         ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                            ExerciseCard(title: exercise.name, imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""))
+                            ExerciseCard(
+                                title: exercise.name,
+                                imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                onInfoTapped: {
+                                    selectedExercise = exercise
+                                }
+                                
+                            )
+                                
                         }
                     }
                     .padding(5)
@@ -40,6 +49,11 @@ struct ExercisesView: View {
                 do {
                     try await viewModel.getExercises()
                 } catch {}
+            }
+            .sheet(item: $selectedExercise){ exercise in
+                ExerciseDetailsView(exercise: exercise)
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

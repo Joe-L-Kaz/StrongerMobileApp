@@ -10,6 +10,7 @@ import SwiftUI
 struct ExerciseCard: View {
     public let title: String
     public let imageUri: String
+    public let onInfoTapped: () -> Void
     
     var body: some View {
         VStack (spacing: 10) {
@@ -29,7 +30,7 @@ struct ExerciseCard: View {
             .clipped()
             .cornerRadius(8)
             
-            StaticButton(onSubmit: { }) {
+            StaticButton(onSubmit: onInfoTapped) {
                 Text("View")
             }
         }
