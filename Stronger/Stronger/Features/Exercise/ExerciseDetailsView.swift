@@ -10,7 +10,7 @@ import SwiftUI
 struct ExerciseDetailsView : View {
     let exercise: ExerciseResponse
     var body : some View {
-        VStack ( alignment: .center, spacing: 10,) {
+        Sheet {
             Text(exercise.name)
                 .font(.title)
                 .fontWeight(.bold)
@@ -71,8 +71,6 @@ struct ExerciseDetailsView : View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
     }
 }
 

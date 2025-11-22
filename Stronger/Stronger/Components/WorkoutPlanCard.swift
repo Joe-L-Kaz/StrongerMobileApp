@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct WorkoutPlanCard : View {
-    public let title: String
+    let title: String
+    let onSubmit: () -> Void
     
     var body: some View {
         VStack(spacing: 10) {
@@ -20,7 +21,7 @@ struct WorkoutPlanCard : View {
             Image(systemName: "figure.strengthtraining.traditional")
                 .font(.system(size: 50))
             
-            StaticButton(onSubmit: { }) {
+            StaticButton(onSubmit: onSubmit) {
                 Text("View")
             }
         }

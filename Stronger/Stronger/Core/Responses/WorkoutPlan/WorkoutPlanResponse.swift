@@ -5,8 +5,8 @@
 //  Created by Joseph Lobo-Kazinczi on 21/11/2025.
 //
 
-public struct WorkoutPlanResponse : Decodable {
-    let id : Int
+public struct WorkoutPlanResponse : Decodable, Identifiable {
+    public let id : Int
     let name : String
     let exercises: [ExerciseResponse]
 }

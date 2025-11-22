@@ -10,6 +10,7 @@ import SwiftUI
 struct WorkoutPlanView: View {
     @StateObject private var viewModel: WorkoutPlanViewModel = WorkoutPlanViewModel()
     let columns = Array(repeating: GridItem(), count: 2)
+    @State var selectedPlan: WorkoutPlanResponse? = nil
     
     var body: some View {
         TabPage(title: "Workout Plans"){
@@ -23,7 +24,9 @@ struct WorkoutPlanView: View {
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
                         ForEach(viewModel.workoutPlans, id: \.id   ) { plan in
-                            WorkoutPlanCard(title: plan.name)
+                            WorkoutPlanCard(title: plan.name){
+                                selectedPlan = plan
+                            }
                         }
                     }
                     .padding(5)
@@ -40,6 +43,13 @@ struct WorkoutPlanView: View {
                 do {
                     try await viewModel.getWorkoutPlans()
                 } catch {}
+            }
+            .sheet(item: $selectedPlan) {plan in
+                WorkoutPlanDetailsView(workoutPlan: plan) {
+                    return
+                }
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
             }
         }
     }
