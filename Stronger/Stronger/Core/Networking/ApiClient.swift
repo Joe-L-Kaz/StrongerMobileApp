@@ -76,7 +76,7 @@ struct ApiClient {
             print(urlResponse.statusCode)
             print(urlResponse)
         }
-#endif
+#endif // DEBUG
         
         guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
                 if let failureResponse = response as? HTTPURLResponse {

@@ -10,11 +10,13 @@ struct DashboardView : View {
     var body: some View {
         TabView {
             
-            WorkoutPlanView()
-                .tabItem {
-                    Image(systemName: "figure.strengthtraining.traditional")
-                    Text("Workout Plan")
-                }
+            NavigationStack{
+                WorkoutPlanView()
+            }
+            .tabItem {
+                Image(systemName: "figure.strengthtraining.traditional")
+                Text("Workout Plan")
+            }
             
             ExercisesView()
                 .tabItem {
