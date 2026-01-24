@@ -10,10 +10,17 @@ import SwiftUI
 struct WorkoutPlanView: View {
     @StateObject private var viewModel: WorkoutPlanViewModel = WorkoutPlanViewModel()
     let columns = Array(repeating: GridItem(), count: 2)
-    @State var selectedPlan: WorkoutPlanResponse? = nil
+
+    private enum Route: Hashable {
+        case logSession(planId: Int)
+    }
+
+    @State private var path = NavigationPath()
+    @State private var selectedPlan: WorkoutPlanResponse? = nil
     
     var body: some View {
-        TabPage(title: "Workout Plans"){
+        NavigationStack(path: $path) {
+            TabPage(title: "Workout Plans"){
             SearchInputField(value: $viewModel.searchText, placeholder: "Search workout plans")
             
             ScrollView {
@@ -44,12 +51,26 @@ struct WorkoutPlanView: View {
                     try await viewModel.getWorkoutPlans()
                 } catch {}
             }
-            .sheet(item: $selectedPlan) {plan in
+            .sheet(item: $selectedPlan) { plan in
                 WorkoutPlanDetailsView(workoutPlan: plan) {
-                    return
+                    selectedPlan = nil
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        path.append(Route.logSession(planId: plan.id))
+                    }
                 }
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
+            }
+            }
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .logSession(let planId):
+                    let plan = viewModel.workoutPlans.filter{$0.id == planId}
+                    WorkoutPlanSessionView(workoutPlan: plan.first!) {
+                        path = NavigationPath()
+                    }
+                }
             }
         }
     }
