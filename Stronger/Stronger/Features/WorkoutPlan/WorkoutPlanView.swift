@@ -67,7 +67,9 @@ struct WorkoutPlanView: View {
                 switch route {
                 case .logSession(let planId):
                     let plan = viewModel.workoutPlans.filter{$0.id == planId}
-                    WorkoutPlanSessionView(workoutPlan: plan.first!)
+                    WorkoutPlanSessionView(workoutPlan: plan.first!) {
+                        path = NavigationPath()
+                    }
                 }
             }
         }
