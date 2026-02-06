@@ -10,12 +10,17 @@ import SwiftUI
 struct RegisterView: View {
     @StateObject private var viewModel = RegisterViewModel()
     @EnvironmentObject var authState : AuthenticationState
-    @Environment(\.dismiss) var dismiss
+    //@Environment(\.dismiss) var dismiss
     @State private var showSuccessAlert: Bool = false
+    
+    let goBack: () -> Void
     
     var body: some View {
         let onNextPressed: () -> Void = {
             viewModel.advanceStep()
+        }
+        let onBackPressed: () -> Void = {
+            viewModel.previousStep()
         }
         let onSignInPressed: () -> Void = {
             Task {
@@ -59,9 +64,13 @@ struct RegisterView: View {
                                 onNextPressed: onNextPressed
                             )
                         } else {
-                            SetPassword(password: $viewModel.password, confirmPassword: $viewModel.confirmPassword, isLoading: $viewModel.isLoading, onSignInPressed: {
-                                onSignInPressed()
-                            })
+                            SetPassword(
+                                password: $viewModel.password,
+                                confirmPassword: $viewModel.confirmPassword,
+                                isLoading: $viewModel.isLoading,
+                                onSignInPressed: onSignInPressed,
+                                onBackPressed: onBackPressed
+                            )
                         }
                     }
                     
@@ -70,10 +79,15 @@ struct RegisterView: View {
             
             HStack (spacing: 10){
                 Text("Already have an account?")
-                NavigationLink(destination: LoginView()) {
-                    Text("Sign In")
-                        .underline(true)
+                Button {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        goBack()
+                    }
+                } label: {
+                    Text("Sign Up")
+                        .underline()
                 }
+                .buttonStyle(.plain)
             }
             .foregroundStyle(.black)
         }
@@ -83,7 +97,7 @@ struct RegisterView: View {
                 title: Text("Account created"),
                 message: Text("Your account has been created successfully."),
                 dismissButton: .default(Text("OK"), action: {
-                    dismiss()
+                    goBack()
                 })
             )
         }
@@ -145,6 +159,7 @@ fileprivate struct SetPassword: View {
     @Binding var confirmPassword: String
     @Binding var isLoading: Bool
     var onSignInPressed: () -> Void
+    var onBackPressed: () -> Void
     
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -166,9 +181,12 @@ fileprivate struct SetPassword: View {
                     isSecureTextEntry: true
                 )
             }
-            VStack (alignment: HorizontalAlignment.center) {
+            HStack {
+                StaticButton(onSubmit: onBackPressed){
+                    Text("Back")
+                }
                 LoadingButton(isLoading: $isLoading, onSubmit: onSignInPressed) {
-                    Text("Sign In")
+                    Text("Create")
                 }
             }
             .frame(maxWidth: .infinity)
@@ -177,5 +195,5 @@ fileprivate struct SetPassword: View {
 }
 
 #Preview {
-    RegisterView()
+    RegisterView(){}
 }
