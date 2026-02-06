@@ -31,9 +31,7 @@ struct ExercisesView: View {
                                 onInfoTapped: {
                                     selectedExercise = exercise
                                 }
-                                
                             )
-                                
                         }
                     }
                     .padding(5)

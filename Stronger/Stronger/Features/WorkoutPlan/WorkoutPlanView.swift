@@ -13,6 +13,7 @@ struct WorkoutPlanView: View {
 
     private enum Route: Hashable {
         case logSession(planId: Int)
+        case createPlan
     }
 
     @State private var path = NavigationPath()
@@ -21,7 +22,18 @@ struct WorkoutPlanView: View {
     var body: some View {
         NavigationStack(path: $path) {
             TabPage(title: "Workout Plans"){
-            SearchInputField(value: $viewModel.searchText, placeholder: "Search workout plans")
+            
+            HStack {
+                SearchInputField(value: $viewModel.searchText, placeholder: "Search workout plans")
+                StaticButton(onSubmit: {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+                        path.append(Route.createPlan)
+                    }
+                }){
+                    Text("Create Plan")
+                }
+            }
+            
             
             ScrollView {
                 if viewModel.failedToLoad {
@@ -68,6 +80,10 @@ struct WorkoutPlanView: View {
                 case .logSession(let planId):
                     let plan = viewModel.workoutPlans.filter{$0.id == planId}
                     WorkoutPlanSessionView(workoutPlan: plan.first!) {
+                        path = NavigationPath()
+                    }
+                case .createPlan:
+                    WorkoutPlanCreateView() {
                         path = NavigationPath()
                     }
                 }
