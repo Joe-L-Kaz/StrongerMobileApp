@@ -25,15 +25,27 @@ struct ExercisesView: View {
                 } else {
                     LazyVGrid(columns: columns ,alignment: .center, spacing: 10) {
                         ForEach(viewModel.exercises, id: \.id   ) { exercise in
-                            ExerciseCard(
-                                title: exercise.name,
-                                imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
-                                onInfoTapped: {
-                                    selectedExercise = exercise
+                            
+                            if(viewModel.searchText.isEmpty){
+                                ExerciseCard(
+                                    title: exercise.name,
+                                    imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                    onInfoTapped: {
+                                        selectedExercise = exercise
+                                    }
+                                )
+                            } else {
+                                if (exercise.name.lowercased().contains(viewModel.searchText.lowercased())){
+                                    ExerciseCard(
+                                        title: exercise.name,
+                                        imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                        onInfoTapped: {
+                                            selectedExercise = exercise
+                                        }
+                                    )
                                 }
-                                
-                            )
-                                
+                            }
+                            
                         }
                     }
                     .padding(5)

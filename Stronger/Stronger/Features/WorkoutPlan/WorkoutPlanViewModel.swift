@@ -22,7 +22,7 @@ public final class WorkoutPlanViewModel : ObservableObject {
     
     public func getWorkoutPlans() async throws -> Void{
         do{
-            workoutPlans = try await workoutPlanService.List()
+            workoutPlans = try await workoutPlanService.list()
         } catch {
             switch error {
             case ApiError.unauthorized:

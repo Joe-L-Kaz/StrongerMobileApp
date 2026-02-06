@@ -57,6 +57,14 @@ final class RegisterViewModel: ObservableObject{
         step += 1
     }
     
+    public func previousStep() -> Void {
+        if (step <= 1){
+            return
+        }
+        
+        step -= 1
+    }
+    
     private func formIsPartiallyFilled() -> Bool {
         
         return (
