@@ -53,7 +53,7 @@ struct ExerciseItem : View {
     @ObservedObject var viewModel: WorkoutPlanSessionViewModel
     
     var body: some View {
-        VStack {
+        VStack(spacing: 20) {
             HStack{
                 Button(action: {viewModel.removeSet(exerciseId: exercise.id)}) {
                     Image(systemName: "minus")
@@ -110,19 +110,30 @@ struct Metrics : View {
     
     var body: some View {
         HStack {
-            InputField(value: $reps, placeholder: "1")
-                .onChange(of: reps) {
-                    pushUpdate()
-                    
-                }
-            InputField(value: $restTime, placeholder: "1")
-                .onChange(of: restTime){
-                    pushUpdate()
-                }
-            InputField(value: $weightKg, placeholder: "1")
-                .onChange(of: weightKg){
-                    pushUpdate()
-                }
+            VStack{
+                Text("Reps")
+                InputField(value: $reps, placeholder: "1")
+                    .onChange(of: reps) {
+                        pushUpdate()
+                    }
+            }
+            
+            VStack{
+                Text("Rest(m)")
+                InputField(value: $restTime, placeholder: "1")
+                    .onChange(of: restTime){
+                        pushUpdate()
+                    }
+            }
+            
+            VStack{
+                Text("Weight(kg)")
+                InputField(value: $weightKg, placeholder: "1")
+                    .onChange(of: weightKg){
+                        pushUpdate()
+                    }
+            }
+            
         }
     }
 }
