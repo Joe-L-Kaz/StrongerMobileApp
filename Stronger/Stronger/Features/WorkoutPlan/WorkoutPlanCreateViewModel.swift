@@ -9,16 +9,22 @@ import Foundation
 
 @MainActor
 final class WorkoutPlanCreateViewModel: ObservableObject{
-    @Published var searchText: String = ""
+    @Published var planName: String = ""
     @Published var exercises: [ExerciseResponse] = []
     @Published var selectedExercises: [Int64] = []
+    @Published var isLoading: Bool = false
     @Published var failedToLoad: Bool = false
     @Published var failureMessage: String = ""
     
     private let exerciseService: ExerciseService
+    private let workoutplanService: WorkoutPlanService
     
-    init(exerciseService: ExerciseService = ExerciseServiceImpl()){
+    init(
+        exerciseService: ExerciseService = ExerciseServiceImpl(),
+        workoutPlanService: WorkoutPlanService = WorkoutPlanServiceImpl()
+    ){
         self.exerciseService = exerciseService
+        self.workoutplanService = workoutPlanService
     }
     
     func getExercises() async throws -> Void  {
@@ -51,5 +57,19 @@ final class WorkoutPlanCreateViewModel: ObservableObject{
         }
         print(selectedExercises)
         updateExerciseIsSelected()
+    }
+    
+    func createPlan(onSuccess: @escaping () -> Void) async throws -> Void {
+        if(selectedExercises.isEmpty || planName.isEmpty){
+            return
+        }
+        
+        do{
+            _ = try await workoutplanService.create(name: planName, ids: selectedExercises)
+        } catch {
+            failureMessage = "Failed to create workout plan"
+            return
+        }
+        onSuccess()
     }
 }

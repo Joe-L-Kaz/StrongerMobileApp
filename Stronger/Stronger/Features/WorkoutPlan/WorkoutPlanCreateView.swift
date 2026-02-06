@@ -14,6 +14,21 @@ struct WorkoutPlanCreateView: View {
     
     var body: some View {
         TabPage(title: "Create Workout Plan"){
+            
+            HStack{
+                SearchInputField(value: $viewModel.planName, placeholder: "Please enter a plan name")
+                LoadingButton(isLoading: $viewModel.isLoading, onSubmit: {
+                    Task{
+                        do{
+                            try await viewModel.createPlan(onSuccess: onCompleted)
+                        } catch {}
+                        
+                    }
+                }){
+                    Text("Create")
+                }
+            }
+            
             ScrollView {
                 if viewModel.failedToLoad {
                     Text(viewModel.failureMessage)
@@ -94,4 +109,8 @@ struct ExerciseButton: View {
         }
         
     }
+}
+
+#Preview {
+    WorkoutPlanCreateView(onCompleted: {})
 }

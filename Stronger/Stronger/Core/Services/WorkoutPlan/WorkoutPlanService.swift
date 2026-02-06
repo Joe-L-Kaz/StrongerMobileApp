@@ -6,5 +6,6 @@
 //
 
 protocol WorkoutPlanService {
-    func List() async throws -> [WorkoutPlanResponse]
+    func list() async throws -> [WorkoutPlanResponse]
+    func create(name: String, ids: [Int64]) async throws -> WorkoutPlanCreateResponse
 }
