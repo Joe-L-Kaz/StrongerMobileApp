@@ -7,4 +7,6 @@
 
 protocol SessionService {
     func Create(sessionData: Dictionary<Int64, [ExerciseSet]>) async throws -> SessionCreateResponse
+    
+    func getInsights() async throws -> InsightsRetrieveResponse
 }
