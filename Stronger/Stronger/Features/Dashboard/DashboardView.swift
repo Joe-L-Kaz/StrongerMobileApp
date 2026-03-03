@@ -23,6 +23,11 @@ struct DashboardView : View {
                     Image(systemName: "dumbbell.fill")
                     Text("Exercises")
                 }
+            InsightsView()
+                .tabItem{
+                    Image(systemName: "chart.xyaxis.line")
+                    Text("Insights")
+                }
         }
     }
 }

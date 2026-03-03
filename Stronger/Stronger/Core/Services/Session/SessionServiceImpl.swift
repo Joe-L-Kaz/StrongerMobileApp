@@ -7,8 +7,6 @@
 
 public struct SessionServiceImpl : SessionService {
     func Create(sessionData: Dictionary<Int64, [ExerciseSet]>) async throws -> SessionCreateResponse {
-        
-
         var exercises: [SessionExercise] = []
         
         for (id, sets) in sessionData {
@@ -37,6 +35,17 @@ public struct SessionServiceImpl : SessionService {
         )
         do {
             response = try await ApiClient.send(endpoint: "Session", requestBody: requestBody)
+        } catch {
+            throw error
+        }
+        return response
+    }
+    
+    func getInsights() async throws -> InsightsRetrieveResponse {
+        var response: InsightsRetrieveResponse = InsightsRetrieveResponse(plots: [:])
+        
+        do{
+            response = try await ApiClient.send(endpoint: "Session/Insights")
         } catch {
             throw error
         }
