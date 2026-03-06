@@ -8,4 +8,6 @@
 struct LoginRequest: Codable {
     var email: String
     var password: String
+    var deviceType: String
+    var deviceToken: String
 }

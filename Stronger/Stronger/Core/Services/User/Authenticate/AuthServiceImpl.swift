@@ -8,7 +8,8 @@ import Foundation
 
 struct AuthServiceImpl: AuthService {
     func login(email: String, password: String) async throws -> Void {
-        let requestBody = LoginRequest(email: email, password: password)
+        let deviceToken = KeychainWrapper.get("apnsDeviceToken")
+        let requestBody = LoginRequest(email: email, password: password, deviceType: "Ios", deviceToken: deviceToken ?? "")
         let requestConfig = HttpRequestConfig(requiresAuth: false)
         let token : String
         do{
