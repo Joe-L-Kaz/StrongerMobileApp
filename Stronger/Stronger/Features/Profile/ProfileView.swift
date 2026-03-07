@@ -11,8 +11,9 @@ import Foundation
 struct ProfileView: View {
 
     @StateObject private var viewModel = ProfileViewModel()
-    @State private var showSaveError = false
-    @State private var saveErrorMessage = ""
+    @State private var showSaveAlert = false
+    @State private var saveAlertTitle = ""
+    @State private var saveAlertMessage = ""
 
     var body: some View {
         TabPage(title: "Profile") {
@@ -31,7 +32,6 @@ struct ProfileView: View {
                 .background(.thinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
-                // Days selection
                 VStack(spacing: 0) {
                     ForEach(viewModel.days) { day in
                         Toggle(isOn: viewModel.bindingForDay(day)) {
@@ -49,7 +49,6 @@ struct ProfileView: View {
                 .background(.ultraThinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
-                // Summary + debug value (useful while building)
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text("Selected")
@@ -80,12 +79,19 @@ struct ProfileView: View {
                 .background(.thinMaterial)
                 .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
 
-                // Save button (wire this up to your API when ready)
                 Button {
                     Task {
-                        try await viewModel.setDays()
+                        do {
+                            try await viewModel.setDays()
+                            saveAlertTitle = "Saved"
+                            saveAlertMessage = "Your training days were updated successfully."
+                            showSaveAlert = true
+                        } catch {
+                            saveAlertTitle = "Save failed"
+                            saveAlertMessage = error.localizedDescription
+                            showSaveAlert = true
+                        }
                     }
-                    
                 } label: {
                     Text("Save")
                         .frame(maxWidth: .infinity)
@@ -95,10 +101,10 @@ struct ProfileView: View {
 
                 Spacer(minLength: 0)
             }
-            .alert("Save failed", isPresented: $showSaveError) {
+            .alert(saveAlertTitle, isPresented: $showSaveAlert) {
                 Button("OK", role: .cancel) { }
             } message: {
-                Text(saveErrorMessage)
+                Text(saveAlertMessage)
             }
             .padding()
         }
