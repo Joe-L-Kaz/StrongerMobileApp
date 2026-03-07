@@ -11,6 +11,8 @@ import Foundation
 struct ProfileView: View {
 
     @StateObject private var viewModel = ProfileViewModel()
+    @State private var showSaveError = false
+    @State private var saveErrorMessage = ""
 
     var body: some View {
         TabPage(title: "Profile") {
@@ -89,8 +91,14 @@ struct ProfileView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
+                .disabled(viewModel.isLoading)
 
                 Spacer(minLength: 0)
+            }
+            .alert("Save failed", isPresented: $showSaveError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text(saveErrorMessage)
             }
             .padding()
         }

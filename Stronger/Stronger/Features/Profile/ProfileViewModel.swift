@@ -10,30 +10,67 @@ import SwiftUI
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
-    private static let storageKey = "trainingDaysBitmask"
+    // Namespaced key to avoid collisions with other parts of the app that may be using the old key.
+    private static let storageKey = "profile.trainingDaysBitmask"
+    private static let legacyStorageKey = "trainingDaysBitmask"
     private let setDaysService: SetTrainingDaysService
     @Published var isLoading = false
     
-    @Published public var trainingDaysBitmask: Int {
-        didSet {
-            UserDefaults.standard.set(trainingDaysBitmask, forKey: Self.storageKey)
-        }
-    }
+    @Published public var trainingDaysBitmask: Int
 
     init(setDaysService : SetTrainingDaysService = SetTrainingDaysServiceImpl()) {
         self.setDaysService = setDaysService
-        self.trainingDaysBitmask = UserDefaults.standard.integer(forKey: Self.storageKey)
+        let defaults = UserDefaults.standard
+
+        #if DEBUG
+        // One-time reset to clear any previously persisted values so you can re-test from a clean state.
+        // To reset again, delete the app from the simulator/device, or set this key back to true.
+        let resetKey = "profile.resetTrainingDaysOnce"
+        if defaults.object(forKey: resetKey) == nil || defaults.bool(forKey: resetKey) {
+            defaults.removeObject(forKey: Self.storageKey)
+            defaults.removeObject(forKey: Self.legacyStorageKey)
+            defaults.set(false, forKey: resetKey)
+            defaults.synchronize()
+        }
+        #endif
+
+        // Prefer the new namespaced key.
+        if defaults.object(forKey: Self.storageKey) != nil {
+            self.trainingDaysBitmask = defaults.integer(forKey: Self.storageKey)
+        }
+        // Otherwise migrate from the legacy key if it exists.
+        else if defaults.object(forKey: Self.legacyStorageKey) != nil {
+            let legacyValue = defaults.integer(forKey: Self.legacyStorageKey)
+            self.trainingDaysBitmask = legacyValue
+            defaults.set(legacyValue, forKey: Self.storageKey)
+        }
+        // Default when nothing exists yet.
+        else {
+            self.trainingDaysBitmask = 0
+        }
     }
     
-    func setDays() async throws -> Void{
+    func setDays() async throws {
         isLoading = true
-        do{
-            try await setDaysService.Set(bitMask: trainingDaysBitmask)
-        } catch{
-            isLoading = false
+        defer { isLoading = false }
+
+        // Persist locally only after a successful save to the API.
+        
+        do {
+            try await setDaysService.Set(bitMask: Int(trainingDaysByteValue))
+        } catch {
+            print(error)
             throw error
         }
-        isLoading = false
+        
+        let defaults = UserDefaults.standard
+        defaults.set(trainingDaysBitmask, forKey: Self.storageKey)
+
+        // Keep legacy key in sync for now (remove once you're sure nothing else depends on it).
+        defaults.set(trainingDaysBitmask, forKey: Self.legacyStorageKey)
+
+        // Force a flush for development/testing so app restarts reflect the latest value.
+        defaults.synchronize()
     }
 
     public struct DayItem: Identifiable {
