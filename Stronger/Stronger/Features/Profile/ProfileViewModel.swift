@@ -10,43 +10,27 @@ import SwiftUI
 
 @MainActor
 final class ProfileViewModel: ObservableObject {
-    // Namespaced key to avoid collisions with other parts of the app that may be using the old key.
-    private static let storageKey = "profile.trainingDaysBitmask"
-    private static let legacyStorageKey = "trainingDaysBitmask"
+    private enum StorageKey {
+        static let trainingDays = "profile.trainingDaysBitmask"
+        static let legacyTrainingDays = "trainingDaysBitmask"
+    }
     private let setDaysService: SetTrainingDaysService
     @Published var isLoading = false
     
-    @Published public var trainingDaysBitmask: Int
+    @Published var trainingDaysBitmask: Int
 
     init(setDaysService : SetTrainingDaysService = SetTrainingDaysServiceImpl()) {
         self.setDaysService = setDaysService
         let defaults = UserDefaults.standard
 
-        #if DEBUG
-        // One-time reset to clear any previously persisted values so you can re-test from a clean state.
-        // To reset again, delete the app from the simulator/device, or set this key back to true.
-        let resetKey = "profile.resetTrainingDaysOnce"
-        if defaults.object(forKey: resetKey) == nil || defaults.bool(forKey: resetKey) {
-            defaults.removeObject(forKey: Self.storageKey)
-            defaults.removeObject(forKey: Self.legacyStorageKey)
-            defaults.set(false, forKey: resetKey)
-            defaults.synchronize()
-        }
-        #endif
-
-        // Prefer the new namespaced key.
-        if defaults.object(forKey: Self.storageKey) != nil {
-            self.trainingDaysBitmask = defaults.integer(forKey: Self.storageKey)
-        }
-        // Otherwise migrate from the legacy key if it exists.
-        else if defaults.object(forKey: Self.legacyStorageKey) != nil {
-            let legacyValue = defaults.integer(forKey: Self.legacyStorageKey)
-            self.trainingDaysBitmask = legacyValue
-            defaults.set(legacyValue, forKey: Self.storageKey)
-        }
-        // Default when nothing exists yet.
-        else {
-            self.trainingDaysBitmask = 0
+        if defaults.object(forKey: StorageKey.trainingDays) != nil {
+            trainingDaysBitmask = defaults.integer(forKey: StorageKey.trainingDays)
+        } else if defaults.object(forKey: StorageKey.legacyTrainingDays) != nil {
+            let legacyValue = defaults.integer(forKey: StorageKey.legacyTrainingDays)
+            trainingDaysBitmask = legacyValue
+            defaults.set(legacyValue, forKey: StorageKey.trainingDays)
+        } else {
+            trainingDaysBitmask = 0
         }
     }
     
@@ -54,31 +38,20 @@ final class ProfileViewModel: ObservableObject {
         isLoading = true
         defer { isLoading = false }
 
-        // Persist locally only after a successful save to the API.
-        
-        do {
-            try await setDaysService.Set(bitMask: Int(trainingDaysByteValue))
-        } catch {
-            print(error)
-            throw error
-        }
-        
+        try await setDaysService.Set(bitMask: Int(trainingDaysByteValue))
+
         let defaults = UserDefaults.standard
-        defaults.set(trainingDaysBitmask, forKey: Self.storageKey)
+        defaults.set(trainingDaysBitmask, forKey: StorageKey.trainingDays)
 
-        // Keep legacy key in sync for now (remove once you're sure nothing else depends on it).
-        defaults.set(trainingDaysBitmask, forKey: Self.legacyStorageKey)
-
-        // Force a flush for development/testing so app restarts reflect the latest value.
-        defaults.synchronize()
+        defaults.set(trainingDaysBitmask, forKey: StorageKey.legacyTrainingDays)
     }
 
-    public struct DayItem: Identifiable {
-        public let id = UUID()
-        public let name: String
-        public let bitIndex: Int
+    struct DayItem: Identifiable {
+        let id = UUID()
+        let name: String
+        let bitIndex: Int
 
-        public init(name: String, bitIndex: Int) {
+        init(name: String, bitIndex: Int) {
             self.name = name
             self.bitIndex = bitIndex
         }
@@ -86,7 +59,7 @@ final class ProfileViewModel: ObservableObject {
     
     // MARK: Day Model
 
-    public let days: [DayItem] = [
+    let days: [DayItem] = [
         .init(name: "Monday", bitIndex: 0),
         .init(name: "Tuesday", bitIndex: 1),
         .init(name: "Wednesday", bitIndex: 2),
@@ -98,12 +71,12 @@ final class ProfileViewModel: ObservableObject {
 
     // MARK: - Bitmask helpers
 
-    public func isSelected(_ bitIndex: Int) -> Bool {
+    func isSelected(_ bitIndex: Int) -> Bool {
         let mask = 1 << bitIndex
         return (trainingDaysBitmask & mask) != 0
     }
 
-    public func setSelected(_ bitIndex: Int, _ newValue: Bool) {
+    func setSelected(_ bitIndex: Int, _ newValue: Bool) {
         let mask = 1 << bitIndex
         if newValue {
             trainingDaysBitmask |= mask
@@ -112,7 +85,7 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 
-    public func bindingForDay(_ day: DayItem) -> Binding<Bool> {
+    func bindingForDay(_ day: DayItem) -> Binding<Bool> {
         Binding(
             get: { [weak self] in
                 guard let self else { return false }
@@ -124,7 +97,7 @@ final class ProfileViewModel: ObservableObject {
         )
     }
 
-    public var selectedDaysSummary: String {
+    var selectedDaysSummary: String {
         let selectedNames = days
             .filter { isSelected($0.bitIndex) }
             .map { $0.name }
@@ -134,11 +107,11 @@ final class ProfileViewModel: ObservableObject {
         return selectedNames.joined(separator: ", ")
     }
 
-    public var trainingDaysByteValue: UInt8 {
+    var trainingDaysByteValue: UInt8 {
         UInt8(trainingDaysBitmask & 0b0111_1111)
     }
 
-    public var trainingDaysBinaryString: String {
+    var trainingDaysBinaryString: String {
         String(trainingDaysByteValue, radix: 2).leftPad(toLength: 7, withPad: "0")
     }
 }
