@@ -109,6 +109,14 @@ struct ApiClient {
                     throw ApiError.internalServerError("Api encountered an internal error")
                 }
         }
+        
+        if data.isEmpty {
+            if TResponse.self == EmptyResponse.self {
+                return EmptyResponse() as! TResponse
+            }
+            throw ApiError.invalidResponse("Empty response body")
+        }
+        
         do{
             let jsonData = try JSONDecoder().decode(TResponse.self, from: data)
             return jsonData
