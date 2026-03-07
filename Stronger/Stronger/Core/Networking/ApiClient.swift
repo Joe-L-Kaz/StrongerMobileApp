@@ -121,6 +121,7 @@ struct ApiClient {
             let jsonData = try JSONDecoder().decode(TResponse.self, from: data)
             return jsonData
         } catch {
+            print(error)
             throw ApiError.invalidResponse("The response object does not match the JSON data return from the API")
         }
     }
