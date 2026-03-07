@@ -28,6 +28,12 @@ struct DashboardView : View {
                     Image(systemName: "chart.xyaxis.line")
                     Text("Insights")
                 }
+            
+            ProfileView()
+                .tabItem{
+                    Image(systemName: "person.fill")
+                    Text("Profile")
+                }
         }
     }
 }
