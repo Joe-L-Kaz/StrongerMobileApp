@@ -40,7 +40,7 @@ struct WorkoutPlanCreateView: View {
                             ExerciseButton(
                                 id: exercise.id,
                                 title: exercise.name,
-                                imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                imageUri: ApiEndpoint.vmBaseUrl + "/images/" + (exercise.imagePath ?? ""),
                                 viewModel: viewModel
                             )
                         }

@@ -29,7 +29,7 @@ struct ExercisesView: View {
                             if(viewModel.searchText.isEmpty){
                                 ExerciseCard(
                                     title: exercise.name,
-                                    imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                    imageUri: ApiEndpoint.vmBaseUrl + "/images/" + (exercise.imagePath ?? ""),
                                     onInfoTapped: {
                                         selectedExercise = exercise
                                     }
@@ -38,7 +38,7 @@ struct ExercisesView: View {
                                 if (exercise.name.lowercased().contains(viewModel.searchText.lowercased())){
                                     ExerciseCard(
                                         title: exercise.name,
-                                        imageUri: "http://localhost:5020/images/" + (exercise.imagePath ?? ""),
+                                        imageUri: ApiEndpoint.vmBaseUrl + "/images/" + (exercise.imagePath ?? ""),
                                         onInfoTapped: {
                                             selectedExercise = exercise
                                         }
