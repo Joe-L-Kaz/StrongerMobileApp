@@ -23,7 +23,7 @@ struct ProfileView: View {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Training schedule")
                         .font(.headline)
-                    Text("Pick the days you normally train. We'll use this to schedule reminders.")
+                    Text("Pick the days you normally train.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
