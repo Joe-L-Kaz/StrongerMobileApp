@@ -30,7 +30,6 @@ final class KeychainWrapper {
         if status == errSecSuccess, let data = dataTypeRef as? Data {
             return String(data: data, encoding: .utf8)
         } else {
-            // Could log error here if desired
             return nil
         }
     }
